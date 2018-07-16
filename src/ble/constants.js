@@ -1,0 +1,5 @@
+export const DEVICE_INFO_MAX_LENGTH = 20;
+
+export const INPUT_REPORT = 'INPUT_REPORT';
+export const OUTPUT_REPORT = 'OUTPUT_REPORT';
+export const FEATURE_REPORT = 'FEATURE_REPORT';
