@@ -1,7 +1,17 @@
 import bleno from 'bleno';
+import Deque from 'double-ended-queue';
+import keyboards from './keyboard';
 import { services } from './ble';
 
 const { DeviceInfoService, BatteryService, HumanInterfaceDeviceService } = services;
+
+const deque = new Deque([]);
+
+keyboards.forEach((
+  (device) => {
+    device.on('data', data => deque.push(data));
+  }
+));
 
 const advertisedServices = [
   new DeviceInfoService({
@@ -10,7 +20,18 @@ const advertisedServices = [
     serialNumber: '1337',
   }),
   new BatteryService(),
-  new HumanInterfaceDeviceService({}),
+  new HumanInterfaceDeviceService({
+    inputReportCallback: (maxValueSize, updateValueCallback) => {
+      setInterval(
+        () => {
+          if (deque.length === 0) return;
+          const keypress = deque.shift();
+          updateValueCallback(keypress);
+        },
+        0,
+      );
+    },
+  }),
 ];
 
 const advertisedServiceUuids = advertisedServices.map(({ uuid }) => uuid);

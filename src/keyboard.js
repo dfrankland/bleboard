@@ -1,29 +1,27 @@
 import hid from 'node-hid';
 
-const MAGIC_FORCE_PRODUCT = 'USB Gaming Keyboard';
+const {
+  KEYBOARD_NAME = 'USB Gaming Keyboard', // Magicforce 68 Keyboard
+} = process.env;
 
 const hidDevices = hid.devices();
 
-const keyboards = hidDevices.filter((
-  ({ product }) => product === MAGIC_FORCE_PRODUCT
-));
-
-keyboards.forEach((
-  (keyboard) => {
+export default hidDevices.filter((
+  ({ product }) => product === KEYBOARD_NAME
+)).reduce(
+  (keyboards, { path }) => {
     try {
-      const device = new hid.HID(keyboard.path);
-
-      device.on('data', (data) => {
-        console.log('Data', data);
-      });
+      const device = new hid.HID(path);
 
       device.on('error', (data) => {
-        console.log('Error', data);
+        console.error('Device error:', data); // eslint-disable-line no-console
       });
 
-      console.log(device);
+      return [...keyboards, device];
     } catch (err) {
-      console.error(err);
+      console.error('Error getting device:', err); // eslint-disable-line no-console
+      return keyboards;
     }
-  }
-));
+  },
+  [],
+);

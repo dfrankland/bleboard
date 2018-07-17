@@ -21,6 +21,7 @@
   "dependencies": {
     "battery-level": "^3.0.0",
     "bleno": "github:dfrankland/bleno#fix-pairing",
+    "double-ended-queue": "^2.1.0-0",
     "node-hid": "^0.7.3"
   },
   "devDependencies": {
