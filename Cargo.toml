@@ -1,0 +1,11 @@
+[package]
+authors = ["Dylan Frankland <github@frankland.io>"]
+edition = "2018"
+name = "bleboard"
+version = "0.1.0"
+[dependencies]
+futures = "0.1.25"
+input = "0.4.1"
+nix = "0.13.0"
+tokio = "0.1.14"
+udev = "0.2.0"
