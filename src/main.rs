@@ -2,7 +2,7 @@
 
 mod gatt;
 
-use self::gatt::create_battery;
+use self::gatt::{create_battery, create_device_info};
 use bluster::{
     gatt::{
         characteristic, characteristic::Characteristic, descriptor::Descriptor, event::Event,
@@ -111,6 +111,9 @@ fn main() {
         ))
         .unwrap();
     peripheral.add_service(&create_battery(&runtime)).unwrap();
+    peripheral
+        .add_service(&create_device_info(&runtime))
+        .unwrap();
 
     // Create advertisement
     let advertisement = future::loop_fn(Arc::clone(&peripheral), |peripheral| {
