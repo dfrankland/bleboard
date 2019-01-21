@@ -1,14 +1,13 @@
 mod characteristic_battery_level;
 mod descriptor_gatt_characteristic_presentation_format;
-mod descriptor_gatt_characteristic_user_description;
 mod service_battery_service;
 
 use self::{
     characteristic_battery_level::create_battery_level,
     descriptor_gatt_characteristic_presentation_format::create_gatt_characteristic_presentation_format,
-    descriptor_gatt_characteristic_user_description::create_gatt_characteristic_user_description,
     service_battery_service::create_battery_service,
 };
+use super::common::create_gatt_characteristic_user_description;
 use bluster::gatt::service::Service;
 use std::{
     collections::HashSet,
