@@ -4,7 +4,7 @@ edition = "2018"
 name = "bleboard"
 version = "0.1.0"
 [dependencies]
-bluster = "0.1.0"
+bluster = "0.1.2"
 crossbeam = "0.6.0"
 futures = "0.1.25"
 input = "0.4.1"
