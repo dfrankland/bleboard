@@ -1,0 +1,3 @@
+mod descriptor_gatt_characteristic_user_description;
+
+pub use self::descriptor_gatt_characteristic_user_description::create_gatt_characteristic_user_description;
