@@ -29,7 +29,7 @@ pub fn create_keyboard(runtime: &Arc<Mutex<Runtime>>) -> Service {
         let mut characteristics = HashSet::new();
         characteristics.insert(create_hid_control_point(runtime, HashSet::new(), (0,)));
         characteristics.insert(create_hid_information(runtime, HashSet::new(), (273, 0, 3)));
-        characteristics.insert(create_protocol_mode(runtime, HashSet::new(), (0,)));
+        characteristics.insert(create_protocol_mode(runtime, HashSet::new(), (0,))); // TODO: Change this to 1 for report protocol mode and n-key rollover
         characteristics.insert({
             let report_type = &ReportType::InputReport;
             create_report(

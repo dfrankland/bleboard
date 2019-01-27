@@ -10,11 +10,12 @@ use bluster::{
 use futures::{prelude::*, sync::mpsc::channel};
 use input::{
     event::{
-        keyboard::{KeyboardEvent, KeyboardEventTrait},
+        keyboard::{KeyState as InputKeyState, KeyboardEvent, KeyboardEventTrait},
         Event::Keyboard,
     },
     Libinput, LibinputInterface,
 };
+use keycode::{KeyMap, KeyMapping, KeyState, KeyboardState};
 use nix::{
     fcntl::{open, OFlag},
     sys::stat::Mode,
@@ -80,7 +81,11 @@ pub fn create_report(
                     if let Keyboard(keyboard_event) = event {
                         let KeyboardEvent::Key(keyboard_key_event) = keyboard_event;
                         let key = keyboard_key_event.key();
-                        keys.push(key);
+                        let pressed = match keyboard_key_event.key_state() {
+                            InputKeyState::Pressed => KeyState::Pressed,
+                            InputKeyState::Released => KeyState::Released,
+                        };
+                        keys.push((key, pressed));
                     }
                 }
                 sender_key.clone().try_send(keys).unwrap();
@@ -110,18 +115,21 @@ pub fn create_report(
             Event::NotifySubscribe(notify_subscribe) => {
                 let notifying = Arc::clone(&notifying);
                 notifying.store(true, atomic::Ordering::Relaxed);
+                let mut keyboard_state = KeyboardState::new(Some(6)); // TODO: 6-key rollover for now, update this later
                 thread::spawn(move || loop {
                     if !(&notifying).load(atomic::Ordering::Relaxed) {
                         break;
                     };
 
                     for keys in receiver_key.try_iter() {
-                        for key in keys {
-                            println!("Got key {:?}", key);
+                        for (key, pressed) in keys {
+                            let key_map =
+                                KeyMap::from_key_mapping(KeyMapping::Evdev(key as u16)).unwrap();
+                            keyboard_state.update_key(key_map, pressed);
                             notify_subscribe
                                 .clone()
                                 .notification
-                                .try_send(vec![key as u8])
+                                .try_send(keyboard_state.usb_input_report())
                                 .unwrap();
                         }
                     }
