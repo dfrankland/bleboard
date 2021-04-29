@@ -1,0 +1,30 @@
+version: 2
+updates:
+- package-ecosystem: cargo
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "13:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: tokio
+    versions:
+    - 1.0.1
+    - 1.1.1
+    - 1.2.0
+  - dependency-name: udev
+    versions:
+    - 0.5.0
+    - 0.6.0
+  - dependency-name: systemstat
+    versions:
+    - 0.1.6
+  - dependency-name: futures
+    versions:
+    - 0.1.30
+  - dependency-name: uuid
+    versions:
+    - 0.8.1
+  - dependency-name: smallvec
+    versions:
+    - 0.6.13
